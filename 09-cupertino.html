@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidepanel 09 — Cupertino Panel (iOS 17 style) · v2 sentence mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f2f2f7; --card:#fff; --ink:#000; --ink2:#8e8e93; --ink3:#c7c7cc;
+    --sep:#e5e5ea; --blue:#007aff; --ios-red:#ff3b30; --green:#34c759; --fill:#e9e9eb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#dcdce2;font-family:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .panel{width:400px;min-height:900px;background:var(--bg);color:var(--ink);position:relative;overflow:hidden}
+
+  /* ── Nav bar ────────────────────────── */
+  .nav{display:flex;align-items:center;padding:14px 16px 4px;font-size:13px}
+  .nav .l{color:var(--blue);font-weight:500}
+  .nav .c{flex:1;text-align:center;font-weight:600;color:var(--ink2)}
+  .nav .r{color:var(--blue);font-weight:500}
+
+  /* ── Large title ────────────────────── */
+  .lt{padding:10px 18px 6px;display:flex;align-items:flex-end;justify-content:space-between}
+  .lt h1{font-size:29px;font-weight:800;letter-spacing:-.6px}
+  .lt .av{width:34px;height:34px;border-radius:99px;background:linear-gradient(135deg,#a833ff,#ff3b30);color:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:800}
+
+  /* ── Segmented control ──────────────── */
+  .seg{margin:8px 16px 0;background:var(--fill);border-radius:9px;padding:2px;display:flex;height:34px}
+  .seg button{flex:1;border:none;background:transparent;border-radius:7px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
+  .seg button.on{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12);font-weight:700}
+
+  /* ── Player card ────────────────────── */
+  .player{margin:14px 16px 0;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .pl-top{padding:14px 16px 0;display:flex;align-items:center;gap:10px}
+  .pl-top .art{width:44px;height:44px;border-radius:9px;background:linear-gradient(135deg,#ff3b30 0%,#ff9500 100%);display:grid;place-items:center}
+  .pl-top .tt{flex:1;min-width:0}
+  .pl-top .tt b{display:block;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pl-top .tt span{font-size:11.5px;color:var(--ink2)}
+  .sent{padding:13px 16px 0;font-size:17.5px;line-height:1.75;font-weight:600}
+  .sprog{margin:12px 16px 0;height:4px;border-radius:99px;background:var(--sep);overflow:hidden}
+  .sprog i{display:block;height:100%;width:61%;background:var(--blue);border-radius:99px}
+  .srange{display:flex;justify-content:space-between;margin:5px 16px 0;font-size:10px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:500}
+  .pl-bar{display:flex;align-items:center;gap:9px;padding:10px 16px 14px}
+  .pl-bar .tm{font-size:10.5px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:500}
+  .pl-bar .br{flex:1;height:4px;border-radius:99px;background:var(--sep);position:relative}
+  .pl-bar .br i{position:absolute;left:0;top:0;bottom:0;width:31%;background:var(--ink);border-radius:99px}
+  .pl-bar .br i:after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:9px;height:9px;background:#fff;border-radius:99px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .pl-ctrl{display:flex;align-items:center;justify-content:center;gap:26px;padding:2px 0 16px}
+  .pc{color:var(--ink)}
+  .pc.big{width:52px;height:52px;border-radius:99px;background:var(--ink);display:grid;place-items:center;color:#fff}
+  .pc .spd{font-size:11.5px;font-weight:700;color:var(--ink);border:1.5px solid var(--ink3);border-radius:99px;padding:4px 9px}
+
+  /* ── Voice memo style recorder ──────── */
+  .memo{margin:0 16px;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .memo .st{display:flex;align-items:center;gap:8px}
+  .memo .st .dot{width:9px;height:9px;border-radius:99px;background:var(--ios-red);animation:bl 1.1s infinite}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+  .memo .st b{font-size:12px;font-weight:700;letter-spacing:.4px;color:var(--ios-red)}
+  .memo .st .tm{margin-left:auto;font-size:19px;font-weight:300;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .memo .bars{display:flex;align-items:center;gap:2.5px;height:34px;margin-top:12px}
+  .memo .bars i{flex:1;border-radius:2px;background:var(--ios-red);opacity:.9}
+  .memo .hint{margin-top:11px;display:flex;justify-content:space-between;align-items:center}
+  .memo .hint span{font-size:11px;color:var(--ink2)}
+  .stopb{display:flex;align-items:center;gap:6px;border:none;background:var(--fill);border-radius:99px;padding:7px 14px;
+    font-family:inherit;font-size:12px;font-weight:600;color:var(--ink)}
+
+  /* ── Grouped list ───────────────────── */
+  .g-h{padding:22px 32px 7px;font-size:12px;color:var(--ink2);text-transform:uppercase;font-weight:500;letter-spacing:.3px}
+  .g{margin:0 16px;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .gr{display:flex;align-items:center;gap:12px;padding:11px 14px;min-height:44px}
+  .gr+.gr{border-top:.5px solid var(--sep)}
+  .gr .ic{width:29px;height:29px;border-radius:7px;display:grid;place-items:center;flex:none}
+  .gr .tx{flex:1;font-size:14px}
+  .gr .tx span{display:block;font-size:11px;color:var(--ink2);margin-top:1px}
+  .gr .v{font-size:14px;color:var(--ink2)}
+  .gr .chev{color:var(--ink3)}
+
+  .sw{position:relative;width:50px;height:30.5px;border-radius:99px;background:var(--fill);flex:none;transition:.2s}
+  .sw i{position:absolute;top:2px;left:2px;width:26.5px;height:26.5px;border-radius:99px;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:.2s}
+  .sw.on{background:var(--green)}
+  .sw.on i{left:calc(100% - 28.5px)}
+
+  .steps{display:flex;flex-direction:column;gap:10px;margin:14px 16px 24px;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .stp{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45}
+  .stp .n{width:20px;height:20px;border-radius:99px;background:var(--fill);color:var(--ink2);font-size:11px;font-weight:700;display:grid;place-items:center;flex:none}
+  .stp.ok .n{background:var(--green);color:#fff}
+  .stp.cur .n{background:var(--blue);color:#fff}
+  .stp b{font-weight:600}
+  .stp span{color:var(--ink2)}
+
+  /* ── v2 · header actions ──────────────── */
+  button{font-family:inherit}
+  .k3{width:34px;height:34px;border:none;border-radius:99px;background:#e9e9eb;color:#3c3c43;display:grid;place-items:center;font-size:16px;font-weight:800;cursor:pointer;line-height:0;padding-bottom:6px}
+  .k3:active{background:#dcdce1}
+  .nav .r{cursor:pointer}
+
+  /* ── v2 · transcript languages page (iOS push page, opens in the SAME sidepanel) ── */
+  .vpage{position:absolute;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column}
+  .vpage.open{display:flex}
+  .vhead{display:flex;align-items:center;padding:14px 16px 8px}
+  .vback{border:none;background:none;color:var(--blue);font-size:15px;font-weight:500;cursor:pointer;padding:0;width:64px;text-align:left}
+  .vhead .vt{flex:1;text-align:center;font-weight:700;font-size:15px}
+  .vhead .vsp{width:64px}
+  .vlist{flex:1;overflow:auto;padding:6px 0}
+  .lgroup{margin:8px 16px;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .lrow{display:flex;align-items:center;gap:12px;padding:11px 14px;width:100%;border:none;background:var(--card);cursor:pointer;text-align:left;color:var(--ink)}
+  .lrow+.lrow{border-top:.5px solid var(--sep)}
+  .lrow .fl{font-size:18px}
+  .lrow .lm{flex:1;min-width:0}
+  .lrow .lm b{display:block;font-size:14px;font-weight:500}
+  .lrow .lm span{display:block;font-size:11px;color:var(--ink2);margin-top:1px}
+  .lrow .bd{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .lrow .lb{font-size:8.5px;font-weight:700;letter-spacing:.3px;border-radius:6px;padding:2.5px 7px;font-style:normal}
+  .lrow .lb.man{background:#e5f2ea;color:#248a3d}
+  .lrow .lb.asr{background:#fff4e0;color:#c77700}
+  .lrow .dots{font-size:7.5px;color:#34c759;letter-spacing:2px;font-style:normal}
+  .lrow .chk{width:18px;color:var(--blue);font-weight:800;font-size:15px;visibility:hidden}
+  .lrow.sel .chk{visibility:visible}
+  .vnote{margin:6px 16px 16px;font-size:11.5px;line-height:1.5;color:var(--ink2);padding:0 14px}
+
+  /* ── v2 · settings sheet — hidden by default, opens ONLY from the ⋮ menu ── */
+  .sover{position:absolute;inset:0;background:rgba(0,0,0,.4);z-index:50;display:none;align-items:flex-end}
+  .sover.open{display:flex}
+  .ssheet{width:100%;background:var(--bg);border-radius:14px 14px 0 0;max-height:90%;overflow:auto;padding-bottom:12px}
+  .grab{width:36px;height:5px;border-radius:99px;background:var(--ink3);margin:8px auto 2px}
+  .snav{display:flex;align-items:center;padding:4px 16px 8px}
+  .snav .sp{width:52px}
+  .snav b{flex:1;text-align:center;font-size:16px;font-weight:700}
+  .snav .done{width:52px;text-align:right;color:var(--blue);font-weight:600;font-size:15px;background:none;border:none;cursor:pointer}
+  .sdanger{border:none;background:none;color:var(--ios-red);font-size:14px;font-weight:500;cursor:pointer}
+  .sdanger-row{display:flex;justify-content:center;padding:14px 0 2px;background:var(--card);margin:0 16px;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .sfoot{padding:8px 24px 10px;text-align:center;font-size:10.5px;line-height:1.5;color:var(--ink2)}
+
+  /* ── v2 · toast (iOS notification) ── */
+  .toast{position:absolute;top:14px;left:14px;right:14px;transform:translateY(-90px);background:rgba(250,250,252,.94);backdrop-filter:blur(20px);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:11px 14px;font-size:12.5px;font-weight:600;color:var(--ink);opacity:0;transition:.28s;z-index:60}
+  .toast.show{transform:translateY(0);opacity:1}
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="panel">
+
+  <div class="nav"><span class="l">‹ Library</span><span class="c">Shadowing</span><span class="r" onclick="openLangs()">🌐 EN</span></div>
+  <div class="lt"><h1>Practice</h1><div style="display:flex;gap:9px;align-items:center"><button class="k3" onclick="openSet()" title="Settings" aria-label="Settings">⋮</button><div class="av">LM</div></div></div>
+
+  <div class="seg"><button class="on">Sentence</button><button>History</button><button>Stats</button></div>
+
+  <div class="player">
+    <div class="pl-top">
+      <div class="art"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+      <div class="tt"><b>How Native Speakers Actually Use English</b><span>English with Lucy · 0.75× · Loop 3×</span></div>
+    </div>
+    <div class="sent">I've been meaning to ask you about that new coffee place downtown.</div>
+    <div class="sprog"><i></i></div>
+    <div class="srange"><span>00:41.2</span><span>sentence progress · 61%</span><span>00:46.8</span></div>
+    <div class="pl-bar"><span class="tm">00:41.2</span><div class="br"><i></i></div><span class="tm">00:46.8</span></div>
+    <div class="pl-ctrl">
+      <span class="pc"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M11 12 20 5v14zM2 12l9-7v14z"/></svg></span>
+      <span class="pc spd">0.75×</span>
+      <span class="pc big"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+      <span class="pc"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>
+      <span class="pc"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M13 12 4 5v14zM22 12l-9-7v14z"/></svg></span>
+    </div>
+  </div>
+
+  <div class="memo">
+    <div class="st"><span class="dot"></span><b>RECORDING SHADOW</b><span class="tm">0:07.4</span></div>
+    <div class="bars">
+      <i style="height:18%"></i><i style="height:40%"></i><i style="height:26%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:84%"></i><i style="height:58%"></i><i style="height:36%"></i><i style="height:70%"></i><i style="height:50%"></i><i style="height:92%"></i><i style="height:54%"></i><i style="height:30%"></i><i style="height:64%"></i><i style="height:42%"></i><i style="height:76%"></i><i style="height:34%"></i><i style="height:56%"></i><i style="height:24%"></i><i style="height:46%"></i>
+    </div>
+    <div class="hint"><span>Scoring the full sentence against Lucy's audio…</span><button class="stopb">■ Stop &amp; Score</button></div>
+  </div>
+
+  <div class="g-h">This session</div>
+  <div class="steps">
+    <div class="stp ok"><span class="n">✓</span><div><b>Listen at full speed</b> <span>· 2 loops</span></div></div>
+    <div class="stp ok"><span class="n">✓</span><div><b>Listen slowly, follow the sentence</b> <span>· 1 loop</span></div></div>
+    <div class="stp cur"><span class="n">3</span><div><b>Record your shadow</b> <span>· in progress</span></div></div>
+    <div class="stp"><span class="n">4</span><div><b>Compare &amp; score</b> <span>· waiting</span></div></div>
+  </div>
+
+  <!-- ── v2 · TRANSCRIPT LANGUAGES · in-panel page (opens in the SAME sidepanel, no new tab) ── -->
+  <div class="vpage" id="langs">
+    <div class="vhead">
+      <button class="vback" onclick="closeLangs()">‹ Back</button>
+      <div class="vt">Transcript Languages</div>
+      <span class="vsp"></span>
+    </div>
+    <div class="vlist">
+      <div class="lgroup">
+        <button class="lrow sel" data-flag="🇬🇧" data-code="EN" data-name="English" onclick="pickLang(this)"><span class="fl">🇬🇧</span><span class="lm"><b>English</b><span>Original · 48 sentences · word-timing ✓</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇪🇸" data-code="ES" data-name="Español" onclick="pickLang(this)"><span class="fl">🇪🇸</span><span class="lm"><b>Spanish</b><span>Español · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇩🇪" data-code="DE" data-name="Deutsch" onclick="pickLang(this)"><span class="fl">🇩🇪</span><span class="lm"><b>German</b><span>Deutsch · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇫🇷" data-code="FR" data-name="Français" onclick="pickLang(this)"><span class="fl">🇫🇷</span><span class="lm"><b>French</b><span>Français · 46 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇵🇹" data-code="PT" data-name="Português" onclick="pickLang(this)"><span class="fl">🇵🇹</span><span class="lm"><b>Portuguese</b><span>Português · 44 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇮🇹" data-code="IT" data-name="Italiano" onclick="pickLang(this)"><span class="fl">🇮🇹</span><span class="lm"><b>Italian</b><span>Italiano · 45 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇹🇷" data-code="TR" data-name="Türkçe" onclick="pickLang(this)"><span class="fl">🇹🇷</span><span class="lm"><b>Turkish</b><span>Türkçe · 47 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇷🇺" data-code="RU" data-name="Русский" onclick="pickLang(this)"><span class="fl">🇷🇺</span><span class="lm"><b>Russian</b><span>Русский · 48 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇸🇦" data-code="AR" data-name="العربية" onclick="pickLang(this)"><span class="fl">🇸🇦</span><span class="lm"><b>Arabic</b><span>العربية · 43 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+        <button class="lrow" data-flag="🇯🇵" data-code="JA" data-name="日本語" onclick="pickLang(this)"><span class="fl">🇯🇵</span><span class="lm"><b>Japanese</b><span>日本語 · 38 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="chk">✓</span></button>
+      </div>
+      <div class="vnote">Switching a language re-prepares the lesson (POST /v1/prepare) and rebuilds sentence timings. Manual tracks keep exact boundaries; ASR tracks are re-split automatically. Everything stays inside this sidepanel — no new tab.</div>
+    </div>
+  </div>
+
+  <!-- ── v2 · SETTINGS · hidden by default, opens ONLY from the ⋮ menu ── -->
+  <div class="sover" id="settings">
+    <div class="ssheet">
+      <div class="grab"></div>
+      <div class="snav"><span class="sp"></span><b>Settings</b><button class="done" onclick="closeSet()">Done</button></div>
+      <div class="g-h">Training</div>
+      <div class="g">
+        <div class="gr">
+          <div class="ic" style="background:#eaf1fb;color:#0a60c2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5m0 14h16M8 15l4-5 3 3 5-7"/></svg></div>
+          <div class="tx">Training unit<span>Full sentences only — no word drills</span></div>
+        </div>
+        <div class="gr">
+          <div style="flex:1;display:flex;gap:2px;background:var(--fill);border-radius:9px;padding:2px">
+            <span style="flex:1;text-align:center;background:#fff;border-radius:7px;padding:6px 0;font-size:12.5px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.12)">Sentence ✓</span>
+            <span style="flex:1;text-align:center;padding:6px 0;font-size:12.5px;font-weight:600;color:var(--ink2);opacity:.55">Word</span>
+          </div>
+        </div>
+        <div class="gr">
+          <div class="ic" style="background:#e5f2ea;color:#248a3d"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="tx">Auto-pause after sentence<span>Video pauses until you record</span></div>
+          <div class="sw on" onclick="this.classList.toggle('on')"><i></i></div>
+        </div>
+        <div class="gr">
+          <div class="ic" style="background:#eaf1fb;color:#0a60c2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/></svg></div>
+          <div class="tx">Playback speed</div><div class="v">0.75×</div><span class="chev">›</span>
+        </div>
+        <div class="gr">
+          <div class="ic" style="background:#fdeff5;color:#c2337b"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></div>
+          <div class="tx">Loop before recording</div><div class="v">3×</div><span class="chev">›</span>
+        </div>
+        <div class="gr">
+          <div class="ic" style="background:#fff4e0;color:#c77700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a3 3 0 0 1 3 3v11"/><path d="M13 5h7v6"/></svg></div>
+          <div class="tx">Show translation<span>Under each sentence</span></div>
+          <div class="sw on" onclick="this.classList.toggle('on')"><i></i></div>
+        </div>
+      </div>
+      <div class="g-h">Microphone</div>
+      <div class="g">
+        <div class="gr">
+          <div class="ic" style="background:#efeafd;color:#6d4bd0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 19v3"/></svg></div>
+          <div class="tx">Input device</div><div class="v">System default</div><span class="chev">›</span>
+        </div>
+      </div>
+      <div class="sdanger-row"><button class="sdanger">Reset Lesson Progress</button></div>
+      <div class="sfoot">Settings live behind the ⋮ menu — the sidepanel stays clean while you practice.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+  function $(id){return document.getElementById(id)}
+  function openLangs(){$('langs').classList.add('open')}
+  function closeLangs(){$('langs').classList.remove('open')}
+  function openSet(){$('settings').classList.add('open')}
+  function closeSet(){$('settings').classList.remove('open')}
+  function pickLang(el){
+    document.querySelectorAll('.lrow').forEach(function(r){r.classList.remove('sel')});
+    el.classList.add('sel');
+    var chip=document.querySelector('.nav .r');
+    if(chip)chip.textContent=el.dataset.flag+' '+el.dataset.code;
+    closeLangs();
+    toast('Transcript: '+el.dataset.name+' — re-preparing lesson…');
+  }
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2400)}
+  document.getElementById('settings').addEventListener('click',function(e){if(e.target===this)closeSet()});
+</script>
+</body>
+</html>

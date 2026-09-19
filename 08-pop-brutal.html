@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidepanel 08 — Pop Brutal (neo-brutalism) · v2 sentence mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111; --bg:#fffef2; --yel:#ffd02f; --red:#ff4911; --grn:#00c48c; --blu:#2d7ff9; --pnk:#ff90e8;
+    --bw:2.5px; --sh:5px 5px 0 #111;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#e5e2d5;font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .panel{width:400px;min-height:860px;background:var(--bg);color:var(--ink);padding-bottom:22px;position:relative;overflow:hidden}
+
+  /* ── Sticker header ─────────────────── */
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 0}
+  .logo{display:flex;align-items:center;gap:8px}
+  .logo .blk{font-family:'Archivo Black';font-size:19px;letter-spacing:-.5px;background:var(--ink);color:#fff;padding:5px 10px 4px;transform:rotate(-2deg);box-shadow:4px 4px 0 var(--yel)}
+  .logo .v{font-size:11px;font-weight:700;background:var(--pnk);border:var(--bw) solid var(--ink);padding:2px 7px;border-radius:99px;transform:rotate(3deg)}
+  .burger{width:38px;height:38px;border:var(--bw) solid var(--ink);background:var(--yel);box-shadow:var(--sh);display:grid;place-items:center;cursor:pointer}
+  .burger i{display:block;width:5px;height:5px;border-radius:99px;background:var(--ink);box-shadow:0 6px 0 var(--ink),0 -6px 0 var(--ink)}
+
+  /* ── Video ticker card ──────────────── */
+  .vid{margin:18px 16px 0;border:var(--bw) solid var(--ink);background:#fff;box-shadow:var(--sh);padding:13px 14px}
+  .vid .rt{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .vid .chip{font-size:9.5px;font-weight:700;letter-spacing:1px;background:var(--grn);color:#fff;border:2px solid var(--ink);padding:2.5px 8px;border-radius:4px;transform:rotate(-1deg)}
+  .vid .chip.r{background:var(--red);transform:rotate(1.5deg)}
+  .vid .rt .cnt{margin-left:auto;font-size:10.5px;font-weight:700;color:#777}
+  .vid b{font-size:15px;font-weight:700;line-height:1.3;display:block}
+  .vid .ch{margin-top:5px;font-size:11.5px;font-weight:600;color:#777}
+  .vid .ch b{display:inline;font-size:11.5px;color:var(--ink)}
+
+  /* ── Progress blocks ────────────────── */
+  .prog{margin:16px 16px 0;display:flex;gap:5px;align-items:center}
+  .pb{flex:1;height:16px;border:2px solid var(--ink);background:#fff}
+  .pb.f{background:var(--grn)}
+  .pb.c{background:repeating-linear-gradient(-45deg,var(--yel) 0 5px,#ffe685 5px 10px)}
+  .prog span{font-size:11px;font-weight:700;margin-left:4px}
+
+  /* ── Karaoke stage ──────────────────── */
+  .stage{margin:18px 16px 0;border:var(--bw) solid var(--ink);background:var(--yel);box-shadow:var(--sh);padding:16px;transform:rotate(-.5deg)}
+  .stage .lb{display:inline-flex;align-items:center;gap:6px;font-family:'Archivo Black';font-size:10px;letter-spacing:1.2px;background:#fff;border:2px solid var(--ink);padding:3px 9px;margin-bottom:12px}
+  .sent{font-size:19px;line-height:1.8;font-weight:700}
+  .sprog{margin-top:13px;height:14px;border:2px solid var(--ink);background:#fff}
+  .sprog i{display:block;height:100%;width:61%;background:repeating-linear-gradient(-45deg,var(--grn) 0 8px,#27dba0 8px 16px)}
+  .stage .ms{margin-top:12px;display:flex;justify-content:space-between;font-size:10.5px;font-weight:700;letter-spacing:.5px}
+
+  /* ── Chunky buttons ─────────────────── */
+  .row{display:flex;gap:12px;margin:18px 16px 0}
+  .cb{flex:1;height:46px;border:var(--bw) solid var(--ink);background:#fff;font-family:inherit;font-size:13px;font-weight:700;
+    box-shadow:var(--sh);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}
+  .cb:active{transform:translate(3px,3px);box-shadow:2px 2px 0 #111}
+  .cb.b{background:var(--blu);color:#fff}
+  .cb.y{background:var(--yel)}
+
+  .recrow{margin:16px 16px 0;display:flex}
+  .rec{flex:1;height:62px;border:var(--bw) solid var(--ink);background:var(--red);color:#fff;font-family:'Archivo Black';
+    font-size:19px;letter-spacing:1px;box-shadow:6px 6px 0 #111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:11px}
+  .rec:active{transform:translate(4px,4px);box-shadow:2px 2px 0 #111}
+  .rec .dot{width:14px;height:14px;background:#fff;border-radius:3px}
+  .rec small{font-family:'Space Grotesk';font-size:11px;letter-spacing:.4px;background:rgba(0,0,0,.25);padding:3px 8px;border-radius:4px}
+
+  /* ── Score badges ───────────────────── */
+  .badges{display:flex;gap:12px;margin:20px 16px 0}
+  .bdg{flex:1;border:var(--bw) solid var(--ink);background:#fff;box-shadow:var(--sh);padding:11px 12px;text-align:center}
+  .bdg b{font-family:'Archivo Black';font-size:21px;display:block}
+  .bdg span{font-size:9.5px;font-weight:700;letter-spacing:1px;color:#777}
+  .bdg.g b{color:var(--grn)} .bdg.r b{color:var(--red)} .bdg.b b{color:var(--blu)}
+
+  /* ── Word report ────────────────────── */
+  .rep{margin:18px 16px 0;border:var(--bw) solid var(--ink);background:#fff;box-shadow:var(--sh)}
+  .rep .h{display:flex;align-items:center;justify-content:space-between;border-bottom:var(--bw) solid var(--ink);padding:9px 13px;background:var(--blu);color:#fff}
+  .rep .h b{font-family:'Archivo Black';font-size:12px;letter-spacing:.8px}
+  .rep .h span{font-size:10.5px;font-weight:700}
+  .rw{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:2px solid #eee}
+  .rw:last-child{border-bottom:none}
+  .rw b{flex:1;font-size:13.5px;font-weight:700}
+  .rw .tk{width:100px;height:10px;border:2px solid var(--ink);background:#fff}
+  .rw .tk i{display:block;height:100%}
+  .rw em{font-style:normal;font-size:11px;font-weight:700;width:52px;text-align:right}
+  .rw.g em{color:var(--grn)} .rw.m em{color:#c77700} .rw.b em{color:var(--red)}
+
+  /* ── v2 · header actions ──────────────── */
+  button{font-family:inherit}
+  .kbtn{height:38px;border:var(--bw) solid var(--ink);background:#fff;box-shadow:3px 3px 0 var(--ink);font-weight:700;font-size:12px;padding:0 11px;cursor:pointer}
+  .kbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #111}
+  .burger{cursor:pointer}
+
+  /* ── v2 · transcript languages page (opens in the SAME sidepanel) ── */
+  .vpage{position:absolute;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column}
+  .vpage.open{display:flex}
+  .vhead{display:flex;align-items:center;gap:10px;padding:16px 16px 12px;border-bottom:var(--bw) solid var(--ink);background:#fff}
+  .vback{width:38px;height:38px;border:var(--bw) solid var(--ink);background:var(--yel);box-shadow:3px 3px 0 var(--ink);font-size:17px;font-weight:900;color:var(--ink);cursor:pointer;display:grid;place-items:center;line-height:0;padding-bottom:3px}
+  .vhead .vt{flex:1}
+  .vhead .vt b{display:block;font-family:'Archivo Black';font-size:14px;letter-spacing:.5px}
+  .vhead .vt span{font-size:11px;font-weight:700;color:#777}
+  .vlist{flex:1;overflow:auto;padding:14px 0}
+  .lrow{display:flex;align-items:center;gap:11px;padding:11px 13px;border:var(--bw) solid var(--ink);background:#fff;box-shadow:3px 3px 0 var(--ink);margin:0 16px 10px;cursor:pointer;text-align:left;width:calc(100% - 32px);color:var(--ink)}
+  .lrow:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #111}
+  .lrow .fl{font-size:17px}
+  .lrow .lm{flex:1;min-width:0}
+  .lrow .lm b{display:block;font-size:13.5px;font-weight:700}
+  .lrow .lm span{font-size:10.5px;font-weight:600;color:#777}
+  .lrow .bd{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .lrow .lb{font-size:8.5px;font-weight:700;letter-spacing:.6px;border:2px solid var(--ink);padding:2px 7px;font-style:normal}
+  .lrow .lb.man{background:var(--grn);color:#fff}
+  .lrow .lb.asr{background:var(--yel);color:var(--ink)}
+  .lrow .dots{font-size:7.5px;color:var(--grn);letter-spacing:2px;font-style:normal;font-weight:700}
+  .lrow .rad{width:18px;height:18px;border:2px solid var(--ink);flex:none;display:grid;place-items:center;background:#fff}
+  .lrow.sel{background:#effcf6}
+  .lrow.sel .rad{background:var(--grn)}
+  .lrow.sel .rad:after{content:'';width:6px;height:6px;background:#fff}
+  .vnote{margin:4px 16px 16px;font-size:11px;line-height:1.55;font-weight:600;color:var(--ink);background:#fff;border:var(--bw) solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:10px 12px;transform:rotate(-.5deg)}
+  .vnote b{background:var(--yel);padding:0 3px}
+
+  /* ── v2 · settings overlay — hidden by default, opens ONLY from the ⋮ menu ── */
+  .sover{position:absolute;inset:0;background:rgba(17,17,17,.5);z-index:50;display:none;align-items:flex-end}
+  .sover.open{display:flex}
+  .ssheet{width:100%;background:var(--bg);border-top:var(--bw) solid var(--ink);max-height:88%;overflow:auto}
+  .shead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;background:var(--ink);color:#fff;position:sticky;top:0;z-index:2}
+  .shead b{font-family:'Archivo Black';font-size:14px;letter-spacing:1px}
+  .sclose{width:32px;height:32px;border:2px solid #fff;background:#fff;color:var(--ink);font-weight:900;font-size:12px;cursor:pointer}
+  .sunit{display:flex;gap:10px;padding:16px 16px 6px}
+  .sun{flex:1;border:var(--bw) solid var(--ink);padding:9px 0;text-align:center;font-size:12.5px;font-weight:700;background:#fff;box-shadow:3px 3px 0 var(--ink)}
+  .sun.on{background:var(--grn);color:#fff}
+  .sun.off{opacity:.55}
+  .sun.off small{display:block;font-size:8.5px;font-weight:900;color:var(--red);margin-top:2px}
+  .snote{font-size:10.5px;font-weight:700;color:#777;padding:0 16px 8px}
+  .srow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:2px solid #e8e6da}
+  .srow .st{flex:1}
+  .srow .st b{display:block;font-size:13.5px;font-weight:700}
+  .srow .st span{font-size:11px;font-weight:600;color:#777}
+  .srow .val{font-family:'Archivo Black';font-size:12px;color:var(--blu)}
+  .tgl{width:46px;height:26px;border:var(--bw) solid var(--ink);background:#fff;position:relative;flex:none;cursor:pointer;transition:.2s}
+  .tgl i{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#c9c9c9;transition:.2s}
+  .tgl.on{background:var(--grn)}
+  .tgl.on i{left:22px;background:#fff}
+  .sdanger{width:calc(100% - 32px);margin:12px 16px 4px;border:var(--bw) solid var(--ink);background:var(--red);color:#fff;font-family:'Archivo Black';font-size:13px;letter-spacing:.5px;padding:12px 0;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
+  .sdanger:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+  .sfoot{padding:8px 18px 18px;text-align:center;font-size:10.5px;font-weight:700;color:#777;line-height:1.5}
+
+  /* ── v2 · toast ───────────────────────── */
+  .toast{position:absolute;left:50%;bottom:20px;transform:translate(-50%,70px);background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:11px 16px;opacity:0;transition:.25s;z-index:60;max-width:330px;text-align:center;box-shadow:4px 4px 0 var(--yel)}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="panel">
+
+  <div class="hdr">
+    <div class="logo"><span class="blk">SHADOW.</span><span class="v">PRO v2</span></div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="kbtn" onclick="openLangs()">🇬🇧 EN</button>
+      <button class="burger" onclick="openSet()" title="Settings" aria-label="Settings"><i></i></button>
+    </div>
+  </div>
+
+  <div class="vid">
+    <div class="rt"><span class="chip">NOW SHADOWING</span><span class="chip r">REC</span><span class="cnt">S12/48</span></div>
+    <b>How Native Speakers Actually Use English</b>
+    <div class="ch">by <b>English with Lucy</b> · Unit 3 · B2</div>
+  </div>
+
+  <div class="prog">
+    <div class="pb f"></div><div class="pb f"></div><div class="pb f"></div><div class="pb c"></div>
+    <div class="pb"></div><div class="pb"></div><div class="pb"></div><div class="pb"></div>
+    <span>25%</span>
+  </div>
+
+  <div class="stage">
+    <span class="lb">🗣️ SAY IT LIKE LUCY</span>
+    <div class="sent">I've been meaning to ask you about that new coffee place downtown.</div>
+    <div class="sprog"><i></i></div>
+    <div class="ms"><span>00:41.2 → 00:46.8</span><span>SENTENCE 61% · LOOP ×3 ON</span></div>
+  </div>
+
+  <div class="row">
+    <button class="cb y">🔁 SLOW 0.75×</button>
+    <button class="cb">▶ PLAY</button>
+    <button class="cb b">NEXT →</button>
+  </div>
+
+  <div class="recrow">
+    <button class="rec"><span class="dot"></span>REC<small>00:07</small></button>
+  </div>
+
+  <div class="badges">
+    <div class="bdg g"><b>87</b><span>ACCURACY</span></div>
+    <div class="bdg b"><b>91</b><span>FLUENCY</span></div>
+    <div class="bdg r"><b>2</b><span>TO REDO</span></div>
+  </div>
+
+  <div class="rep">
+    <div class="h"><b>SENTENCE REPORT</b><span>last takes</span></div>
+    <div class="rw g"><b>S12 · coffee place downtown…</b><span class="tk"><i style="width:87%;background:var(--grn)"></i></span><em>87%</em></div>
+    <div class="rw g"><b>S11 · you know what's weird…</b><span class="tk"><i style="width:91%;background:var(--grn)"></i></span><em>91%</em></div>
+    <div class="rw m"><b>S10 · the place changed owners…</b><span class="tk"><i style="width:78%;background:var(--yel)"></i></span><em>78%</em></div>
+    <div class="rw b"><b>S09 · I keep coming back here…</b><span class="tk"><i style="width:61%;background:var(--red)"></i></span><em>61%</em></div>
+  </div>
+
+  <!-- ── v2 · TRANSCRIPT LANGUAGES · in-panel page (opens in the SAME sidepanel, no new tab) ── -->
+  <div class="vpage" id="langs">
+    <div class="vhead">
+      <button class="vback" onclick="closeLangs()">‹</button>
+      <div class="vt"><b>TRANSCRIPT LANGUAGES</b><span>All caption tracks for this video</span></div>
+      <span style="font-size:18px">🌍</span>
+    </div>
+    <div class="vlist">
+      <button class="lrow sel" data-code="EN" data-name="English" onclick="pickLang(this)"><span class="fl">🇬🇧</span><span class="lm"><b>English</b><span>Original · 48 sentences · word-timing ✓</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="ES" data-name="Español" onclick="pickLang(this)"><span class="fl">🇪🇸</span><span class="lm"><b>Spanish</b><span>Español · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="DE" data-name="Deutsch" onclick="pickLang(this)"><span class="fl">🇩🇪</span><span class="lm"><b>German</b><span>Deutsch · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="FR" data-name="Français" onclick="pickLang(this)"><span class="fl">🇫🇷</span><span class="lm"><b>French</b><span>Français · 46 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="PT" data-name="Português" onclick="pickLang(this)"><span class="fl">🇵🇹</span><span class="lm"><b>Portuguese</b><span>Português · 44 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="IT" data-name="Italiano" onclick="pickLang(this)"><span class="fl">🇮🇹</span><span class="lm"><b>Italian</b><span>Italiano · 45 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="TR" data-name="Türkçe" onclick="pickLang(this)"><span class="fl">🇹🇷</span><span class="lm"><b>Turkish</b><span>Türkçe · 47 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="RU" data-name="Русский" onclick="pickLang(this)"><span class="fl">🇷🇺</span><span class="lm"><b>Russian</b><span>Русский · 48 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="AR" data-name="العربية" onclick="pickLang(this)"><span class="fl">🇸🇦</span><span class="lm"><b>Arabic</b><span>العربية · 43 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-code="JA" data-name="日本語" onclick="pickLang(this)"><span class="fl">🇯🇵</span><span class="lm"><b>Japanese</b><span>日本語 · 38 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+    </div>
+    <div class="vnote"><b>HOW SWITCHING WORKS:</b> the lesson is re-prepared (POST /v1/prepare) and sentence timings are rebuilt. Manual tracks keep exact boundaries; ASR tracks are re-split automatically. Everything stays inside this sidepanel — no new tab.</div>
+  </div>
+
+  <!-- ── v2 · SETTINGS · hidden by default, opens ONLY from the ⋮ menu ── -->
+  <div class="sover" id="settings">
+    <div class="ssheet">
+      <div class="shead"><b>SETTINGS</b><button class="sclose" onclick="closeSet()">✕</button></div>
+      <div class="sunit">
+        <div class="sun on">SENTENCE ✓</div>
+        <div class="sun off">WORD<small>OFF · FULL SENTENCES ONLY</small></div>
+      </div>
+      <div class="snote">Training unit is locked to whole sentences — no single-word drills.</div>
+      <div class="srow"><div class="st"><b>Auto-pause after each sentence</b><span>Video pauses so you can shadow it</span></div><div class="tgl on" onclick="this.classList.toggle('on')"><i></i></div></div>
+      <div class="srow"><div class="st"><b>Loops before recording</b><span>Repeat the full sentence before you speak</span></div><div class="val">3×</div></div>
+      <div class="srow"><div class="st"><b>Show translation</b><span>Translation line under each sentence</span></div><div class="tgl on" onclick="this.classList.toggle('on')"><i></i></div></div>
+      <div class="srow"><div class="st"><b>Default playback speed</b><span>Applied when a sentence starts</span></div><div class="val">0.75×</div></div>
+      <div class="srow"><div class="st"><b>Microphone</b><span>System default — MacBook Pro Mic</span></div><div class="val">DEFAULT</div></div>
+      <button class="sdanger">RESET LESSON PROGRESS</button>
+      <div class="sfoot">Settings live behind the ⋮ menu —<br>the sidepanel stays clean while you practice.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+  function $(id){return document.getElementById(id)}
+  function openLangs(){$('langs').classList.add('open')}
+  function closeLangs(){$('langs').classList.remove('open')}
+  function openSet(){$('settings').classList.add('open')}
+  function closeSet(){$('settings').classList.remove('open')}
+  function pickLang(el){
+    document.querySelectorAll('.lrow').forEach(function(r){r.classList.remove('sel')});
+    el.classList.add('sel');
+    var chip=document.querySelector('.kbtn');
+    if(chip)chip.textContent=el.dataset.code;
+    closeLangs();
+    toast('Transcript: '+el.dataset.name+' — re-preparing lesson…');
+  }
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2400)}
+  document.getElementById('settings').addEventListener('click',function(e){if(e.target===this)closeSet()});
+</script>
+</body>
+</html>

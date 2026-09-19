@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidepanel 04 — Midnight Audio (Spotify-style dark) · v2 sentence mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#121212; --panel:#1a1a1a; --panel2:#242424; --line:#2a2a2a;
+    --txt:#fff; --txt2:#a7a7a7; --grn:#1ed760; --grn-d:#169c46; --rec:#ff453a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0a0a;font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .panel{width:400px;min-height:880px;background:var(--bg);color:var(--txt);position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .glow{position:absolute;top:-120px;left:-60px;width:320px;height:320px;border-radius:50%;
+    background:radial-gradient(circle,rgba(30,215,96,.22),transparent 65%);filter:blur(10px);pointer-events:none}
+  .glow2{position:absolute;top:60px;right:-100px;width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(80,60,220,.18),transparent 65%);filter:blur(10px);pointer-events:none}
+
+  /* ── Header ─────────────────────────── */
+  .hdr{position:relative;display:flex;align-items:center;gap:12px;padding:16px 16px 10px}
+  .back{width:32px;height:32px;border-radius:99px;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
+  .hdr .tt{flex:1;text-align:center}
+  .hdr .tt b{display:block;font-size:12px;font-weight:800;letter-spacing:.3px}
+  .hdr .tt span{font-size:10.5px;color:var(--txt2);font-weight:600}
+  .more{width:32px;height:32px;border-radius:99px;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
+
+  /* ── Cover + title ──────────────────── */
+  .cover-row{position:relative;display:flex;gap:14px;padding:10px 16px 4px;align-items:flex-end}
+  .cover{width:92px;height:92px;border-radius:10px;background:
+    linear-gradient(135deg,#0f5132 0%,#1ed760 55%,#a8f0b8 100%);
+    box-shadow:0 10px 28px rgba(0,0,0,.55);display:grid;place-items:center}
+  .cover svg{opacity:.95}
+  .ct{flex:1;min-width:0}
+  .ct .tag{font-size:9.5px;font-weight:800;letter-spacing:1.2px;color:var(--txt2)}
+  .ct h1{font-size:17px;font-weight:800;line-height:1.3;margin:3px 0 4px}
+  .ct p{font-size:12px;color:var(--txt2);font-weight:600}
+  .ct .lvl{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:rgba(30,215,96,.12);color:var(--grn);
+    font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:99px}
+
+  /* ── Waveform ───────────────────────── */
+  .wave{position:relative;margin:16px 16px 0;height:74px;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .wave svg{position:absolute;inset:0;width:100%;height:100%}
+  .wave .cursor{position:absolute;top:0;bottom:0;left:38%;width:2px;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.8)}
+  .wave .ab{position:absolute;top:0;bottom:0;left:26%;width:31%;background:rgba(30,215,96,.13);border-left:1.5px solid var(--grn);border-right:1.5px solid var(--grn)}
+  .wave .lab{position:absolute;bottom:5px;left:27%;font-size:8.5px;font-weight:800;color:var(--grn);letter-spacing:1px}
+  .wave .lab2{position:absolute;bottom:5px;right:8px;font-size:8.5px;font-weight:700;color:var(--txt2);letter-spacing:1px}
+
+  /* ── Karaoke line ───────────────────── */
+  .line{position:relative;padding:16px 18px 6px;text-align:center}
+  .line .idx{font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--grn)}
+  .sent{margin-top:8px;font-size:18.5px;line-height:1.72;font-weight:700}
+  .sprog{margin-top:13px;height:4px;border-radius:99px;background:#2c2c2c;overflow:hidden}
+  .sprog i{display:block;height:100%;width:61%;background:var(--grn);border-radius:99px}
+  .srange{display:flex;justify-content:space-between;margin-top:6px;font-size:9px;font-weight:800;letter-spacing:1px;color:var(--txt2)}
+  .srange em{font-style:normal;color:var(--grn)}
+
+  /* ── Transport ──────────────────────── */
+  .time{display:flex;justify-content:space-between;padding:6px 22px 0;font-size:10px;font-weight:700;color:var(--txt2);letter-spacing:.5px}
+  .ctrl{display:flex;align-items:center;justify-content:center;gap:18px;padding:10px 16px 4px}
+  .cb{background:none;border:none;color:#e8e8e8;display:grid;place-items:center;cursor:pointer}
+  .play{width:56px;height:56px;border-radius:99px;background:#fff;color:#000;display:grid;place-items:center;
+    box-shadow:0 8px 20px rgba(255,255,255,.12);border:none;cursor:pointer}
+  .spd{font-size:11px;font-weight:800;color:var(--grn);border:1.5px solid rgba(30,215,96,.4);border-radius:99px;padding:5px 10px;background:rgba(30,215,96,.08)}
+
+  /* ── Recording state ────────────────── */
+  .rec-card{margin:14px 16px;border-radius:14px;background:linear-gradient(135deg,#2a1214,#1a1a1a);border:1px solid #4a2020;padding:13px 15px}
+  .rec-top{display:flex;align-items:center;gap:9px}
+  .dot{width:10px;height:10px;border-radius:99px;background:var(--rec);animation:bl 1s infinite;box-shadow:0 0 10px var(--rec)}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+  .rec-top b{font-size:12.5px;font-weight:800;letter-spacing:.6px;color:#ffb4ae}
+  .rec-top em{margin-left:auto;font-style:normal;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff}
+  .bars{display:flex;align-items:flex-end;gap:3px;height:30px;margin-top:11px}
+  .bars i{flex:1;background:var(--rec);border-radius:2px;opacity:.85}
+  .rec-hint{margin-top:9px;font-size:10.5px;color:#c98a86;font-weight:600}
+
+  /* ── Last score summary ─────────────── */
+  .score{margin:16px 16px 0;border-radius:14px;background:var(--panel);border:1px solid var(--line);padding:14px 15px}
+  .score .h{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+  .score .h b{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--txt2)}
+  .score .h span{font-size:10.5px;font-weight:700;color:var(--grn)}
+  .mrow{display:flex;align-items:center;gap:10px;margin-top:8px}
+  .mrow .k{width:78px;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--txt2)}
+  .mrow .t{flex:1;height:5px;border-radius:99px;background:#2c2c2c;overflow:hidden}
+  .mrow .t i{display:block;height:100%;border-radius:99px;background:var(--grn)}
+  .mrow .v{width:34px;text-align:right;font-size:10.5px;font-weight:800;color:#e8e8e8}
+  .mrow.warn .t i{background:#ff9f0a}
+
+  /* ── Bottom nav ─────────────────────── */
+  .nav{margin-top:auto;position:sticky;bottom:0;display:flex;background:rgba(18,18,18,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);padding:9px 8px 13px}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--txt2);font-size:9.5px;font-weight:700;letter-spacing:.4px}
+  .tab.on{color:var(--grn)}
+  .tab .nd{position:relative}
+  .tab .nd:after{content:'';position:absolute;top:-1px;right:-3px;width:6px;height:6px;border-radius:99px;background:var(--rec)}
+
+  /* ── v2 · header actions ──────────────── */
+  button{font-family:inherit}
+  .langchip{width:32px;height:32px;border-radius:99px;background:rgba(0,0,0,.45);border:none;display:grid;place-items:center;color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.5px;cursor:pointer}
+  .langchip:hover{background:rgba(255,255,255,.14)}
+  .more{cursor:pointer;border:none}
+  .more:hover{background:rgba(255,255,255,.14)}
+  .tab{cursor:pointer}
+
+  /* ── v2 · transcript languages page (opens in the SAME sidepanel) ── */
+  .vpage{position:absolute;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column}
+  .vpage.open{display:flex}
+  .vhead{display:flex;align-items:center;gap:11px;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+  .vback{width:32px;height:32px;border-radius:99px;background:rgba(255,255,255,.08);border:none;font-size:16px;color:#fff;cursor:pointer;display:grid;place-items:center;line-height:0;padding-bottom:2px}
+  .vhead .vt{flex:1}
+  .vhead .vt b{display:block;font-size:13px;font-weight:800}
+  .vhead .vt span{font-size:10.5px;color:var(--txt2);font-weight:600}
+  .vlist{flex:1;overflow:auto;padding:12px 0}
+  .lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin:0 16px 8px;cursor:pointer;text-align:left;width:calc(100% - 32px);color:#fff}
+  .lrow .fl{font-size:17px}
+  .lrow .lm{flex:1;min-width:0}
+  .lrow .lm b{display:block;font-size:13px;font-weight:700}
+  .lrow .lm span{font-size:10.5px;color:var(--txt2);font-weight:600}
+  .lrow .bd{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .lrow .lb{font-size:8.5px;font-weight:800;letter-spacing:.6px;border-radius:99px;padding:2.5px 8px;font-style:normal}
+  .lrow .lb.man{background:rgba(30,215,96,.16);color:var(--grn)}
+  .lrow .lb.asr{background:rgba(255,159,10,.16);color:#ff9f0a}
+  .lrow .dots{font-size:7.5px;color:var(--grn);letter-spacing:2px;font-style:normal}
+  .lrow .rad{width:17px;height:17px;border-radius:99px;border:1.5px solid #3a3a3a;flex:none;display:grid;place-items:center}
+  .lrow.sel{border-color:var(--grn);box-shadow:0 0 0 1px var(--grn)}
+  .lrow.sel .rad{border-color:var(--grn);background:var(--grn)}
+  .lrow.sel .rad:after{content:'';width:5px;height:5px;border-radius:99px;background:#04150a}
+  .vnote{margin:4px 16px 16px;font-size:10.5px;line-height:1.55;color:var(--txt2);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .vnote b{color:#fff}
+
+  /* ── v2 · settings overlay — hidden by default, opens ONLY from the ⋮ menu ── */
+  .sover{position:absolute;inset:0;background:rgba(0,0,0,.62);z-index:50;display:none;align-items:flex-end}
+  .sover.open{display:flex}
+  .ssheet{width:100%;background:#1e1e1e;border-radius:16px 16px 0 0;max-height:88%;overflow:auto}
+  .shead{display:flex;align-items:center;justify-content:space-between;padding:15px 16px 11px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#1e1e1e;z-index:2}
+  .shead b{font-size:14px;font-weight:800;color:#fff}
+  .sclose{width:30px;height:30px;border:none;border-radius:99px;background:#2c2c2c;color:#fff;font-size:12.5px;cursor:pointer}
+  .sunit{display:flex;gap:8px;padding:13px 16px 6px}
+  .sun{flex:1;border:1.5px solid #3a3a3a;border-radius:10px;padding:8px 0 7px;text-align:center;font-size:12px;font-weight:700;color:var(--txt2);background:#262626}
+  .sun.on{border-color:var(--grn);color:var(--grn);background:rgba(30,215,96,.10)}
+  .sun.off{opacity:.6}
+  .sun.off small{display:block;font-size:8.5px;font-weight:800;color:#ff9f0a;letter-spacing:.5px;margin-top:2px}
+  .snote{font-size:10.5px;color:var(--txt2);padding:0 16px 8px}
+  .srow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #2a2a2a}
+  .srow .st{flex:1}
+  .srow .st b{display:block;font-size:13px;font-weight:600;color:#fff}
+  .srow .st span{font-size:11px;color:var(--txt2)}
+  .srow .val{font-size:12px;font-weight:800;color:var(--grn)}
+  .tgl{width:42px;height:25px;border-radius:99px;background:#3a3a3a;position:relative;flex:none;cursor:pointer;transition:.2s}
+  .tgl i{position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:99px;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .tgl.on{background:var(--grn)}
+  .tgl.on i{left:20px}
+  .sdanger{width:calc(100% - 32px);margin:10px 16px 4px;border:1px solid rgba(255,69,58,.4);background:rgba(255,69,58,.10);color:#ff6b60;border-radius:11px;padding:11px 0;font-size:12.5px;font-weight:700;cursor:pointer}
+  .sfoot{padding:8px 18px 16px;text-align:center;font-size:10.5px;line-height:1.5;color:var(--txt2)}
+
+  /* ── v2 · toast ───────────────────────── */
+  .toast{position:absolute;left:50%;bottom:20px;transform:translate(-50%,70px);background:#fff;color:#000;font-size:12px;font-weight:700;padding:10px 16px;border-radius:99px;opacity:0;transition:.25s;z-index:60;max-width:330px;text-align:center}
+  .toast.show{transform:translate(-50%,0);opacity:1}
+  svg{display:block}
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="glow"></div><div class="glow2"></div>
+
+  <div class="hdr">
+    <div class="back"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+    <div class="tt"><b>SHADOWING ENGINE</b><span>Sentence 12 of 48</span></div>
+    <button class="langchip" onclick="openLangs()" title="Transcript languages">EN</button>
+    <button class="more" onclick="openSet()" title="Settings" aria-label="Settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+  </div>
+
+  <div class="cover-row">
+    <div class="cover"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#052e13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+    <div class="ct">
+      <span class="tag">NOW SHADOWING</span>
+      <h1>How Native Speakers Actually Use English</h1>
+      <p>English with Lucy · 24:10</p>
+      <span class="lvl">◆ LEVEL B2 · UNIT 3</span>
+    </div>
+  </div>
+
+  <div class="wave">
+    <div class="ab"></div>
+    <svg viewBox="0 0 368 74" preserveAspectRatio="none">
+      <g fill="#3a3a3a">
+        <rect x="4" y="30" width="3" height="14" rx="1.5"/><rect x="10" y="24" width="3" height="26" rx="1.5"/><rect x="16" y="32" width="3" height="10" rx="1.5"/><rect x="22" y="18" width="3" height="38" rx="1.5"/><rect x="28" y="26" width="3" height="22" rx="1.5"/><rect x="34" y="12" width="3" height="50" rx="1.5"/><rect x="40" y="28" width="3" height="18" rx="1.5"/><rect x="46" y="20" width="3" height="34" rx="1.5"/><rect x="52" y="30" width="3" height="14" rx="1.5"/><rect x="58" y="14" width="3" height="46" rx="1.5"/><rect x="64" y="24" width="3" height="26" rx="1.5"/><rect x="70" y="32" width="3" height="10" rx="1.5"/><rect x="76" y="18" width="3" height="38" rx="1.5"/><rect x="82" y="28" width="3" height="18" rx="1.5"/><rect x="88" y="10" width="3" height="54" rx="1.5"/><rect x="94" y="22" width="3" height="30" rx="1.5"/><rect x="100" y="30" width="3" height="14" rx="1.5"/><rect x="112" y="24" width="3" height="26" rx="1.5"/><rect x="118" y="32" width="3" height="10" rx="1.5"/><rect x="124" y="18" width="3" height="38" rx="1.5"/><rect x="130" y="26" width="3" height="22" rx="1.5"/><rect x="136" y="12" width="3" height="50" rx="1.5"/><rect x="142" y="28" width="3" height="18" rx="1.5"/><rect x="148" y="20" width="3" height="34" rx="1.5"/><rect x="154" y="30" width="3" height="14" rx="1.5"/><rect x="160" y="14" width="3" height="46" rx="1.5"/><rect x="166" y="24" width="3" height="26" rx="1.5"/><rect x="172" y="32" width="3" height="10" rx="1.5"/><rect x="178" y="18" width="3" height="38" rx="1.5"/><rect x="184" y="28" width="3" height="18" rx="1.5"/><rect x="190" y="10" width="3" height="54" rx="1.5"/><rect x="196" y="22" width="3" height="30" rx="1.5"/><rect x="202" y="30" width="3" height="14" rx="1.5"/><rect x="214" y="26" width="3" height="22" rx="1.5"/><rect x="220" y="32" width="3" height="10" rx="1.5"/><rect x="226" y="18" width="3" height="38" rx="1.5"/><rect x="232" y="26" width="3" height="22" rx="1.5"/><rect x="238" y="12" width="3" height="50" rx="1.5"/><rect x="244" y="28" width="3" height="18" rx="1.5"/><rect x="250" y="20" width="3" height="34" rx="1.5"/><rect x="256" y="30" width="3" height="14" rx="1.5"/><rect x="262" y="14" width="3" height="46" rx="1.5"/><rect x="268" y="24" width="3" height="26" rx="1.5"/><rect x="274" y="32" width="3" height="10" rx="1.5"/><rect x="280" y="18" width="3" height="38" rx="1.5"/><rect x="286" y="28" width="3" height="18" rx="1.5"/><rect x="292" y="10" width="3" height="54" rx="1.5"/><rect x="298" y="22" width="3" height="30" rx="1.5"/><rect x="304" y="30" width="3" height="14" rx="1.5"/><rect x="316" y="24" width="3" height="26" rx="1.5"/><rect x="322" y="32" width="3" height="10" rx="1.5"/><rect x="328" y="18" width="3" height="38" rx="1.5"/><rect x="334" y="26" width="3" height="22" rx="1.5"/><rect x="340" y="12" width="3" height="50" rx="1.5"/><rect x="346" y="28" width="3" height="18" rx="1.5"/><rect x="352" y="20" width="3" height="34" rx="1.5"/><rect x="358" y="30" width="3" height="14" rx="1.5"/>
+      </g>
+      <g fill="#1ed760">
+        <rect x="106" y="20" width="3" height="34" rx="1.5"/><rect x="112" y="12" width="3" height="50" rx="1.5"/><rect x="118" y="24" width="3" height="26" rx="1.5"/><rect x="124" y="16" width="3" height="42" rx="1.5"/><rect x="130" y="26" width="3" height="22" rx="1.5"/><rect x="136" y="10" width="3" height="54" rx="1.5"/><rect x="142" y="20" width="3" height="34" rx="1.5"/><rect x="148" y="14" width="3" height="46" rx="1.5"/><rect x="154" y="24" width="3" height="26" rx="1.5"/><rect x="160" y="28" width="3" height="18" rx="1.5"/><rect x="166" y="12" width="3" height="50" rx="1.5"/><rect x="172" y="22" width="3" height="30" rx="1.5"/><rect x="178" y="26" width="3" height="22" rx="1.5"/><rect x="184" y="14" width="3" height="46" rx="1.5"/><rect x="190" y="20" width="3" height="34" rx="1.5"/><rect x="196" y="24" width="3" height="26" rx="1.5"/><rect x="202" y="28" width="3" height="18" rx="1.5"/><rect x="208" y="12" width="3" height="50" rx="1.5"/><rect x="214" y="22" width="3" height="30" rx="1.5"/>
+      </g>
+    </svg>
+    <div class="cursor"></div>
+    <div class="lab">A-B LOOP</div>
+    <div class="lab2">00:41.2</div>
+  </div>
+
+  <div class="line">
+    <span class="idx">SENTENCE 12 · 00:41.2 – 00:46.8 · FULL SENTENCE</span>
+    <div class="sent">I've been meaning to ask you about that new coffee place downtown.</div>
+    <div class="sprog"><i></i></div>
+    <div class="srange"><span>00:41.2</span><em>SENTENCE PROGRESS · 61%</em><span>00:46.8</span></div>
+  </div>
+
+  <div class="time"><span>00:41.2</span><span>-00:05.6</span></div>
+  <div class="ctrl">
+    <button class="cb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 12 20 5v14zM2 12l9-7v14z"/></svg></button>
+    <span class="spd">0.75×</span>
+    <button class="play"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+    <button class="cb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button>
+    <button class="cb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 12 4 5v14zM22 12l-9-7v14z"/></svg></button>
+  </div>
+
+  <div class="rec-card">
+    <div class="rec-top"><span class="dot"></span><b>LISTENING TO YOU…</b><em>00:07.4</em></div>
+    <div class="bars">
+      <i style="height:22%"></i><i style="height:48%"></i><i style="height:30%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:88%"></i><i style="height:64%"></i><i style="height:40%"></i><i style="height:76%"></i><i style="height:52%"></i><i style="height:92%"></i><i style="height:58%"></i><i style="height:34%"></i><i style="height:66%"></i><i style="height:44%"></i><i style="height:80%"></i><i style="height:36%"></i><i style="height:60%"></i><i style="height:28%"></i><i style="height:50%"></i>
+    </div>
+    <div class="rec-hint">Release to score the full sentence against Lucy's audio</div>
+  </div>
+
+  <div class="score">
+    <div class="h"><b>TAKE 1 · SENTENCE SCORED</b><span>Overall 87</span></div>
+    <div class="mrow"><span class="k">ACCURACY</span><div class="t"><i style="width:82%"></i></div><span class="v">82</span></div>
+    <div class="mrow"><span class="k">FLUENCY</span><div class="t"><i style="width:91%"></i></div><span class="v">91</span></div>
+    <div class="mrow"><span class="k">PACE</span><div class="t"><i style="width:88%"></i></div><span class="v">88</span></div>
+    <div class="mrow"><span class="k">RHYTHM</span><div class="t"><i style="width:85%"></i></div><span class="v">85</span></div>
+  </div>
+
+  <div class="nav">
+    <div class="tab on"><span class="nd"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="9" rx="1.2"/><rect x="10" y="7" width="4" height="14" rx="1.2"/><rect x="17" y="3" width="4" height="18" rx="1.2"/></svg></span>PRACTICE</div>
+    <div class="tab"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"/></svg>SENTENCES</div>
+    <div class="tab"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>PROGRESS</div>
+    <div class="tab" onclick="openLangs()"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>LANGUAGES</div>
+  </div>
+
+  <!-- ── v2 · TRANSCRIPT LANGUAGES · in-panel page (opens in the SAME sidepanel, no new tab) ── -->
+  <div class="vpage" id="langs">
+    <div class="vhead">
+      <button class="vback" onclick="closeLangs()">‹</button>
+      <div class="vt"><b>Transcript languages</b><span>All caption tracks for this video</span></div>
+      <span style="font-size:18px">🌍</span>
+    </div>
+    <div class="vlist">
+      <button class="lrow sel" data-flag="🇬🇧" data-code="EN" data-name="English" onclick="pickLang(this)"><span class="fl">🇬🇧</span><span class="lm"><b>English</b><span>Original · 48 sentences · word-timing ✓</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇪🇸" data-code="ES" data-name="Español" onclick="pickLang(this)"><span class="fl">🇪🇸</span><span class="lm"><b>Spanish</b><span>Español · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●●</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇩🇪" data-code="DE" data-name="Deutsch" onclick="pickLang(this)"><span class="fl">🇩🇪</span><span class="lm"><b>German</b><span>Deutsch · 48 sentences</span></span><span class="bd"><i class="lb man">MANUAL</i><i class="dots">●●○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇫🇷" data-code="FR" data-name="Français" onclick="pickLang(this)"><span class="fl">🇫🇷</span><span class="lm"><b>French</b><span>Français · 46 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇵🇹" data-code="PT" data-name="Português" onclick="pickLang(this)"><span class="fl">🇵🇹</span><span class="lm"><b>Portuguese</b><span>Português · 44 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇮🇹" data-code="IT" data-name="Italiano" onclick="pickLang(this)"><span class="fl">🇮🇹</span><span class="lm"><b>Italian</b><span>Italiano · 45 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇹🇷" data-code="TR" data-name="Türkçe" onclick="pickLang(this)"><span class="fl">🇹🇷</span><span class="lm"><b>Turkish</b><span>Türkçe · 47 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇷🇺" data-code="RU" data-name="Русский" onclick="pickLang(this)"><span class="fl">🇷🇺</span><span class="lm"><b>Russian</b><span>Русский · 48 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇸🇦" data-code="AR" data-name="العربية" onclick="pickLang(this)"><span class="fl">🇸🇦</span><span class="lm"><b>Arabic</b><span>العربية · 43 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+      <button class="lrow" data-flag="🇯🇵" data-code="JA" data-name="日本語" onclick="pickLang(this)"><span class="fl">🇯🇵</span><span class="lm"><b>Japanese</b><span>日本語 · 38 sentences</span></span><span class="bd"><i class="lb asr">ASR · AUTO</i><i class="dots">●○○</i></span><span class="rad"></span></button>
+    </div>
+    <div class="vnote"><b>How switching works:</b> the lesson is re-prepared (POST /v1/prepare) and sentence timings are rebuilt. Manual tracks keep exact boundaries; ASR tracks are re-split automatically. Everything stays inside this sidepanel — no new tab.</div>
+  </div>
+
+  <!-- ── v2 · SETTINGS · hidden by default, opens ONLY from the ⋮ menu ── -->
+  <div class="sover" id="settings">
+    <div class="ssheet">
+      <div class="shead"><b>Settings</b><button class="sclose" onclick="closeSet()">✕</button></div>
+      <div class="sunit">
+        <div class="sun on">Sentence ✓</div>
+        <div class="sun off">Word<small>OFF · FULL SENTENCES ONLY</small></div>
+      </div>
+      <div class="snote">Training unit is locked to whole sentences — no single-word drills.</div>
+      <div class="srow"><div class="st"><b>Auto-pause after each sentence</b><span>Video pauses so you can shadow it</span></div><div class="tgl on" onclick="this.classList.toggle('on')"><i></i></div></div>
+      <div class="srow"><div class="st"><b>Loops before recording</b><span>Repeat the full sentence before you speak</span></div><div class="val">3×</div></div>
+      <div class="srow"><div class="st"><b>Show translation</b><span>Translation line under each sentence</span></div><div class="tgl on" onclick="this.classList.toggle('on')"><i></i></div></div>
+      <div class="srow"><div class="st"><b>Default playback speed</b><span>Applied when a sentence starts</span></div><div class="val">0.75×</div></div>
+      <div class="srow"><div class="st"><b>Microphone</b><span>System default — MacBook Pro Mic</span></div><div class="val">Default</div></div>
+      <button class="sdanger">Reset lesson progress</button>
+      <div class="sfoot">Settings live behind the ⋮ menu —<br>the sidepanel stays clean while you practice.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+  function $(id){return document.getElementById(id)}
+  function openLangs(){$('langs').classList.add('open')}
+  function closeLangs(){$('langs').classList.remove('open')}
+  function openSet(){$('settings').classList.add('open')}
+  function closeSet(){$('settings').classList.remove('open')}
+  function pickLang(el){
+    document.querySelectorAll('.lrow').forEach(function(r){r.classList.remove('sel')});
+    el.classList.add('sel');
+    var chip=document.querySelector('.langchip');
+    if(chip)chip.textContent=el.dataset.code;
+    closeLangs();
+    toast('Transcript: '+el.dataset.name+' — re-preparing lesson…');
+  }
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2400)}
+  document.getElementById('settings').addEventListener('click',function(e){if(e.target===this)closeSet()});
+</script>
+</body>
+</html>

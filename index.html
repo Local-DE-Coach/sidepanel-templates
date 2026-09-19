@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shadowing Sidepanel · 6 UI Templates — v2</title>
+<style>
+  :root{
+    --bg:#0e1013; --card:#16191e; --line:#262b33; --ink:#f2f4f8; --ink2:#9aa3b2;
+    --acc:#14a800; --acc2:#1ed760; --vio:#a78bfa; --pnk:#ff90e8; --yel:#ffd02f; --blu:#2d7ff9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,'Segoe UI',Roboto,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+
+  /* ── Hero ─────────────────────────── */
+  .hero{max-width:1160px;margin:0 auto;padding:56px 24px 30px;text-align:center}
+  .hero .kicker{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:1.5px;color:var(--acc2);
+    border:1px solid #1e3d2a;background:#10231a;border-radius:99px;padding:7px 14px;text-transform:uppercase}
+  .hero h1{font-size:40px;font-weight:800;letter-spacing:-1.2px;margin:18px 0 12px;line-height:1.12}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,#14a800,#1ed760,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{max-width:640px;margin:0 auto;font-size:15px;line-height:1.65;color:var(--ink2)}
+  .hero .repo{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:13px;font-weight:600;color:var(--ink);
+    border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 16px;text-decoration:none}
+  .hero .repo:hover{border-color:#3a424e}
+
+  /* ── Feature strip ────────────────── */
+  .strip{max-width:1160px;margin:26px auto 0;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .feat{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:16px 18px;display:flex;gap:13px;align-items:flex-start}
+  .feat .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex:none}
+  .feat .ic.g{background:#12261a} .feat .ic.b{background:#131f33} .feat .ic.v{background:#221b33}
+  .feat b{display:block;font-size:13.5px;font-weight:700;margin-bottom:3px}
+  .feat span{font-size:12px;line-height:1.5;color:var(--ink2)}
+
+  /* ── Grid ─────────────────────────── */
+  .grid{max-width:1160px;margin:38px auto 0;padding:0 24px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+  .card{border:1px solid var(--line);background:var(--card);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+  .card:hover{border-color:#3a424e;transform:translateY(-3px)}
+  .card .top{display:flex;align-items:center;gap:11px;padding:15px 18px 13px}
+  .num{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;font-weight:700;color:#0e1013;border-radius:8px;padding:4px 8px}
+  .card h2{font-size:15.5px;font-weight:700;flex:1}
+  .card .style{font-size:10.5px;font-weight:600;color:var(--ink2);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap}
+  .shot{margin:0 18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;height:470px;position:relative}
+  .shot iframe{width:400px;height:812px;transform:scale(.608);transform-origin:0 0;border:0;pointer-events:none}
+  .shot .fade{position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(to top,rgba(255,255,255,.92),transparent)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:13px 18px 4px}
+  .chip{font-size:10.5px;font-weight:600;color:var(--ink2);background:#1c2027;border-radius:99px;padding:4px 10px}
+  .foot{display:flex;gap:10px;padding:13px 18px 18px;margin-top:auto}
+  .open{flex:1;text-align:center;font-size:12.5px;font-weight:700;text-decoration:none;border-radius:10px;padding:10px 0;
+    background:linear-gradient(135deg,#14a800,#0e7a3d);color:#fff}
+  .open:hover{filter:brightness(1.1)}
+
+  /* ── How-to ───────────────────────── */
+  .howto{max-width:1160px;margin:0 auto;padding:0 24px 80px}
+  .howto h3{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:14px}
+  .howto ol{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:22px 22px 22px 40px;display:flex;flex-direction:column;gap:10px}
+  .howto li{font-size:13.5px;line-height:1.6;color:var(--ink2)}
+  .howto li b{color:var(--ink)}
+  code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;background:#1c2027;border-radius:6px;padding:2px 6px;color:#c8e6c5}
+  .endnote{text-align:center;font-size:12px;color:var(--ink2);padding:0 24px 46px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">● v2 — sentence mode update</span>
+  <h1>Shadowing Sidepanel<br><em>6 UI Templates</em></h1>
+  <p>Six hand-crafted design directions for the Chrome side panel of the shadowing extension — all rebuilt around
+     <b>long-sentence training</b>, with an in-panel <b>transcript-languages page</b> and <b>settings tucked behind the ⋮ menu</b>.
+     Pure HTML/CSS/JS · no images · live previews below.</p>
+  <a class="repo" href="https://github.com/Local-DE-Coach/sidepanel-templates" target="_blank" rel="noopener">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.05.78 2.13v3.16c0 .3.2.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+    Local-DE-Coach/sidepanel-templates
+  </a>
+</header>
+
+<section class="strip">
+  <div class="feat"><span class="ic g">🌍</span><div><b>Transcript languages page</b><span>One button opens a full language switcher inside the same side panel — manual &amp; ASR tracks, quality dots, sentence counts.</span></div></div>
+  <div class="feat"><span class="ic b">⏱</span><div><b>Sentence-based training</b><span>The training unit is the whole long sentence — progress, loops, recording and scoring all happen per sentence, not per word.</span></div></div>
+  <div class="feat"><span class="ic v">⋮</span><div><b>Settings on demand</b><span>The ⋮ menu is the only way in. Settings never clutter the practice view — they appear only when you need them.</span></div></div>
+</section>
+
+<main class="grid">
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#d3f2cc">01</span><h2>Clarity Pro</h2><span class="style">Upwork-style light</span></div>
+    <div class="shot"><iframe src="01-clarity-pro.html" title="Template 01 — Clarity Pro" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">Header + lang chip</span><span class="chip">Sentence card + progress</span><span class="chip">Transport</span><span class="chip">Record CTA</span><span class="chip">Stats</span><span class="chip">Up-next queue</span></div>
+    <div class="foot"><a class="open" href="01-clarity-pro.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#d9f2c8">03</span><h2>Streak Quest</h2><span class="style">Duolingo-style gamified</span></div>
+    <div class="shot"><iframe src="03-streak-quest.html" title="Template 03 — Streak Quest" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">XP ring + streak</span><span class="chip">Mascot tip</span><span class="chip">Sentence stage</span><span class="chip">3D record button</span><span class="chip">Daily goal</span><span class="chip">Up next + XP</span></div>
+    <div class="foot"><a class="open" href="03-streak-quest.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#c4e8cf">04</span><h2>Midnight Audio</h2><span class="style">Spotify-style dark</span></div>
+    <div class="shot"><iframe src="04-midnight-audio.html" title="Template 04 — Midnight Audio" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">Cover + waveform</span><span class="chip">A-B loop</span><span class="chip">Sentence line</span><span class="chip">Rec level bars</span><span class="chip">Take score</span><span class="chip">Tab nav</span></div>
+    <div class="foot"><a class="open" href="04-midnight-audio.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#e2d9f7">06</span><h2>Material You</h2><span class="style">Material Design 3</span></div>
+    <div class="shot"><iframe src="06-material-you.html" title="Template 06 — Material You" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">M3 app bar</span><span class="chip">Segmented tabs</span><span class="chip">Tonal sentence card</span><span class="chip">Up-next list</span><span class="chip">Extended FAB</span><span class="chip">M3 switches</span></div>
+    <div class="foot"><a class="open" href="06-material-you.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#ffe2ae">08</span><h2>Pop Brutal</h2><span class="style">Neo-brutalism</span></div>
+    <div class="shot"><iframe src="08-pop-brutal.html" title="Template 08 — Pop Brutal" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">Sticker header</span><span class="chip">Block progress</span><span class="chip">Yellow stage</span><span class="chip">Chunky buttons</span><span class="chip">Score badges</span><span class="chip">Sentence report</span></div>
+    <div class="foot"><a class="open" href="08-pop-brutal.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+  <article class="card">
+    <div class="top"><span class="num" style="background:#d6e4fb">09</span><h2>Cupertino Panel</h2><span class="style">iOS 17 style</span></div>
+    <div class="shot"><iframe src="09-cupertino.html" title="Template 09 — Cupertino Panel" loading="lazy"></iframe><div class="fade"></div></div>
+    <div class="chips"><span class="chip">iOS nav + large title</span><span class="chip">Segmented control</span><span class="chip">Player card</span><span class="chip">Voice-memo recorder</span><span class="chip">Grouped lists</span><span class="chip">Session steps</span></div>
+    <div class="foot"><a class="open" href="09-cupertino.html" target="_blank" rel="noopener">Open full template ↗</a></div>
+  </article>
+
+</main>
+
+<section class="howto">
+  <h3>Every template ships with the same three moves</h3>
+  <ol>
+    <li><b>Try the language button</b> — header chip / 🌐 icon opens the <b>Transcript languages</b> page <i>inside the same side panel</i>. Pick any track (manual or ASR) — the header updates and the lesson "re-prepares".</li>
+    <li><b>Feel the sentence focus</b> — no word-by-word karaoke anywhere: one full long sentence on stage, a per-sentence progress bar, loop &amp; auto-pause around whole sentences, and an up-next queue of long sentences.</li>
+    <li><b>Tap the ⋮ kebab</b> — the <b>only</b> entrance to Settings (training unit locked to <code>Sentence ✓</code>, auto-pause, loops, speed, translation, mic). It is hidden until you ask for it.</li>
+  </ol>
+</section>
+
+<footer class="endnote">Shadowing Coach · sidepanel templates v2 · 6 of 10 directions kept (01 · 03 · 04 · 06 · 08 · 09) — 02, 05, 07, 10 retired in this update.</footer>
+
+</body>
+</html>
