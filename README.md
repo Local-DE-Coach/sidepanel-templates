@@ -1,9 +1,24 @@
-# Shadowing Sidepanel — UI Templates (v2)
+# Shadowing Sidepanel — UI Templates (v3)
 
 Six hand-crafted UI templates for the Chrome **side panel** of the language-shadowing browser extension.
 Live showcase: **https://local-de-coach.github.io/sidepanel-templates/**
 
-## v2 update (this revision)
+## v3 update (this revision)
+
+- 🎤 **Live word tracker (all six)** — while you shadow, every word lights up as you say it: spoken words
+  dim to gray, the current word gets a **themed chip** (yellow marker in 03 — like the Duolingo reference,
+  iOS blue in 09, Spotify green in 04, M3 purple in 06, Upwork green in 01, brutalist sticker in 08),
+  synced with the sentence progress bar.
+- 03 · **no-scroll layout** — the ring is compacted and Daily goal / streak row / `UP NEXT · LONG SENTENCES`
+  moved off the main flow into a **"Quests & up next" sheet**, opened from the 💎 XP button in the top bar.
+  Main view now fits any sidepanel height without scrolling (`min-height:100vh` + flexible spacer).
+- 09 · **compact header + two-line progress** — removed `‹ Library`; the nav is now
+  `🌐 EN · Shadowing · ⋯` (settings behind the three-dot). Progress is two lines:
+  **line 1** = position of the sentence inside the video (blue segment on the video track),
+  **line 2** = real-time sentence progress with a green **"you" fill** that trails the audio while you speak,
+  plus a live `YOU · 00:44.1` timecode.
+
+## v2 update
 
 - ✂️ Reduced from 10 → **6 templates** (kept `01 · 03 · 04 · 06 · 08 · 09`; retired `02 · 05 · 07 · 10`).
 - 🌍 **Transcript languages page** — a button in every header opens a full language switcher *inside the same

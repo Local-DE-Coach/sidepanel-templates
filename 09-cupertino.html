@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Sidepanel 09 — Cupertino Panel (iOS 17 style) · v2 sentence mode</title>
+<title>Sidepanel 09 — Cupertino Panel (iOS 17 style) · v3 word tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:#dcdce2;font-family:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  .panel{width:400px;min-height:900px;background:var(--bg);color:var(--ink);position:relative;overflow:hidden}
+  .panel{width:400px;min-height:100vh;background:var(--bg);color:var(--ink);position:relative;overflow:hidden}
 
   /* ── Nav bar ────────────────────────── */
   .nav{display:flex;align-items:center;padding:14px 16px 4px;font-size:13px}
@@ -39,21 +39,25 @@
   .pl-top .tt b{display:block;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .pl-top .tt span{font-size:11.5px;color:var(--ink2)}
   .sent{padding:13px 16px 0;font-size:17.5px;line-height:1.75;font-weight:600}
-  .sprog{margin:12px 16px 0;height:4px;border-radius:99px;background:var(--sep);overflow:hidden}
-  .sprog i{display:block;height:100%;width:61%;background:var(--blue);border-radius:99px}
+  /* ── v3 · two-line progress: video position + sentence/your-voice ── */
+  .vpos{margin:13px 16px 0}
+  .vpos .vlab{display:flex;justify-content:space-between;font-size:9px;font-weight:600;letter-spacing:.5px;color:var(--ink2);text-transform:uppercase;margin-bottom:5px}
+  .vtrack{position:relative;height:4px;border-radius:99px;background:var(--sep)}
+  .vtrack .vseg{position:absolute;top:-2px;bottom:-2px;left:19.4%;width:3.4%;min-width:14px;border-radius:99px;background:var(--blue);opacity:.38}
+  .vtrack .vseg:after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:9px;height:9px;border-radius:99px;background:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .sprog{position:relative;margin:14px 16px 0;height:5px;border-radius:99px;background:var(--sep);overflow:hidden}
+  .sprog i{position:absolute;left:0;top:0;bottom:0;border-radius:99px}
+  .sprog .aud{width:61%;background:var(--blue)}
+  .sprog .you{width:44%;background:var(--green);opacity:.92}
   .srange{display:flex;justify-content:space-between;margin:5px 16px 0;font-size:10px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:500}
-  .pl-bar{display:flex;align-items:center;gap:9px;padding:10px 16px 14px}
-  .pl-bar .tm{font-size:10.5px;color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:500}
-  .pl-bar .br{flex:1;height:4px;border-radius:99px;background:var(--sep);position:relative}
-  .pl-bar .br i{position:absolute;left:0;top:0;bottom:0;width:31%;background:var(--ink);border-radius:99px}
-  .pl-bar .br i:after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:9px;height:9px;background:#fff;border-radius:99px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .srange em{font-style:normal;color:#248a3d;font-weight:600}
   .pl-ctrl{display:flex;align-items:center;justify-content:center;gap:26px;padding:2px 0 16px}
   .pc{color:var(--ink)}
   .pc.big{width:52px;height:52px;border-radius:99px;background:var(--ink);display:grid;place-items:center;color:#fff}
   .pc .spd{font-size:11.5px;font-weight:700;color:var(--ink);border:1.5px solid var(--ink3);border-radius:99px;padding:4px 9px}
 
   /* ── Voice memo style recorder ──────── */
-  .memo{margin:0 16px;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .memo{margin:12px 16px 0;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   .memo .st{display:flex;align-items:center;gap:8px}
   .memo .st .dot{width:9px;height:9px;border-radius:99px;background:var(--ios-red);animation:bl 1.1s infinite}
   @keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
@@ -67,7 +71,7 @@
     font-family:inherit;font-size:12px;font-weight:600;color:var(--ink)}
 
   /* ── Grouped list ───────────────────── */
-  .g-h{padding:22px 32px 7px;font-size:12px;color:var(--ink2);text-transform:uppercase;font-weight:500;letter-spacing:.3px}
+  .g-h{padding:18px 32px 7px;font-size:12px;color:var(--ink2);text-transform:uppercase;font-weight:500;letter-spacing:.3px}
   .g{margin:0 16px;background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   .gr{display:flex;align-items:center;gap:12px;padding:11px 14px;min-height:44px}
   .gr+.gr{border-top:.5px solid var(--sep)}
@@ -82,7 +86,7 @@
   .sw.on{background:var(--green)}
   .sw.on i{left:calc(100% - 28.5px)}
 
-  .steps{display:flex;flex-direction:column;gap:10px;margin:14px 16px 24px;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .steps{display:flex;flex-direction:column;gap:10px;margin:14px 16px 18px;background:var(--card);border-radius:14px;padding:15px 16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   .stp{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45}
   .stp .n{width:20px;height:20px;border-radius:99px;background:var(--fill);color:var(--ink2);font-size:11px;font-weight:700;display:grid;place-items:center;flex:none}
   .stp.ok .n{background:var(--green);color:#fff}
@@ -136,14 +140,19 @@
   /* ── v2 · toast (iOS notification) ── */
   .toast{position:absolute;top:14px;left:14px;right:14px;transform:translateY(-90px);background:rgba(250,250,252,.94);backdrop-filter:blur(20px);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:11px 14px;font-size:12.5px;font-weight:600;color:var(--ink);opacity:0;transition:.28s;z-index:60}
   .toast.show{transform:translateY(0);opacity:1}
+
+  /* ── v3 · live word tracker — words light up as you speak ── */
+  .sent .w{border-radius:7px;padding:0 6px;margin:0 -6px;transition:color .18s,background .18s}
+  .sent .w.done{color:var(--ink2)}
+  .sent .w.cur{background:var(--blue);color:#fff;box-shadow:0 1px 6px rgba(0,122,255,.45)}
   svg{display:block}
 </style>
 </head>
 <body>
 <div class="panel">
 
-  <div class="nav"><span class="l">‹ Library</span><span class="c">Shadowing</span><span class="r" onclick="openLangs()">🌐 EN</span></div>
-  <div class="lt"><h1>Practice</h1><div style="display:flex;gap:9px;align-items:center"><button class="k3" onclick="openSet()" title="Settings" aria-label="Settings">⋮</button><div class="av">LM</div></div></div>
+  <div class="nav"><span class="l" onclick="openLangs()" style="cursor:pointer">🌐 EN</span><span class="c">Shadowing</span><button class="k3" onclick="openSet()" title="Settings" aria-label="Settings">⋯</button></div>
+  <div class="lt"><h1>Practice</h1><div class="av">LM</div></div>
 
   <div class="seg"><button class="on">Sentence</button><button>History</button><button>Stats</button></div>
 
@@ -153,9 +162,12 @@
       <div class="tt"><b>How Native Speakers Actually Use English</b><span>English with Lucy · 0.75× · Loop 3×</span></div>
     </div>
     <div class="sent">I've been meaning to ask you about that new coffee place downtown.</div>
-    <div class="sprog"><i></i></div>
-    <div class="srange"><span>00:41.2</span><span>sentence progress · 61%</span><span>00:46.8</span></div>
-    <div class="pl-bar"><span class="tm">00:41.2</span><div class="br"><i></i></div><span class="tm">00:46.8</span></div>
+    <div class="vpos">
+      <div class="vlab"><span>Video · 03:32</span><span>Sentence 12 of 48</span></div>
+      <div class="vtrack"><i class="vseg"></i></div>
+    </div>
+    <div class="sprog"><i class="aud"></i><i class="you"></i></div>
+    <div class="srange"><span>00:41.2</span><em id="youLab">YOU · 00:44.0</em><span>00:46.8</span></div>
     <div class="pl-ctrl">
       <span class="pc"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M11 12 20 5v14zM2 12l9-7v14z"/></svg></span>
       <span class="pc spd">0.75×</span>
@@ -264,13 +276,36 @@
   function pickLang(el){
     document.querySelectorAll('.lrow').forEach(function(r){r.classList.remove('sel')});
     el.classList.add('sel');
-    var chip=document.querySelector('.nav .r');
+    var chip=document.querySelector('.nav .l');
     if(chip)chip.textContent=el.dataset.flag+' '+el.dataset.code;
     closeLangs();
     toast('Transcript: '+el.dataset.name+' — re-preparing lesson…');
   }
   function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2400)}
   document.getElementById('settings').addEventListener('click',function(e){if(e.target===this)closeSet()});
+  // ── v3 · live word tracker + dual progress (audio vs your voice) ──
+  (function(){
+    var s=document.querySelector('.sent');if(!s)return;
+    var words=s.textContent.trim().split(/\s+/);
+    s.innerHTML=words.map(function(w){return '<span class="w">'+w+'</span>'}).join(' ');
+    var ws=[].slice.call(s.querySelectorAll('.w'));
+    var aud=document.querySelector('.sprog .aud'),you=document.querySelector('.sprog .you'),lab=document.getElementById('youLab');
+    var i=9,T0=41.2,T1=46.8;
+    function pc(n){return Math.round(n/ws.length*100)+'%'}
+    function paint(){
+      ws.forEach(function(w,k){w.classList.toggle('done',k<i);w.classList.toggle('cur',k===i)});
+      var y=Math.max(0,i-1.4);
+      if(aud)aud.style.width=pc(i);
+      if(you)you.style.width=pc(y);
+      if(lab)lab.textContent='YOU · 00:'+(T0+(T1-T0)*(y/ws.length)).toFixed(1);
+    }
+    paint();
+    setInterval(function(){
+      i++;
+      if(i>ws.length){i=0;if(aud)aud.style.width='0%';if(you)you.style.width='0%';if(lab)lab.textContent='YOU · 00:41.2'}
+      paint();
+    },430);
+  })();
 </script>
 </body>
 </html>

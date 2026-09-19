@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Sidepanel 06 — Material You (Material Design 3) · v2 sentence mode</title>
+<title>Sidepanel 06 — Material You (Material Design 3) · v3 word tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,700&display=swap" rel="stylesheet">
@@ -136,6 +136,10 @@
   /* ── v2 · toast (M3 snackbar) ── */
   .toast{position:absolute;left:16px;right:16px;bottom:18px;transform:translateY(90px);background:#322F35;color:#E6E0E9;font-size:12.5px;font-weight:500;padding:12px 16px;border-radius:10px;opacity:0;transition:.25s;z-index:60;text-align:center}
   .toast.show{transform:translateY(0);opacity:1}
+  /* ── v3 · live word tracker — words light up as you speak ── */
+  .sent .w{border-radius:8px;padding:0 6px;margin:0 -6px;transition:color .18s,background .18s,box-shadow .18s}
+  .sent .w.done{color:#a599b3}
+  .sent .w.cur{background:var(--primary);color:var(--on-primary);box-shadow:0 1px 4px rgba(103,80,164,.4)}
   svg{display:block}
 </style>
 </head>
@@ -269,6 +273,19 @@
     toast('Transcript: '+el.dataset.name+' — re-preparing lesson…');
   }
   function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2400)}
+  // ── v3 · live word tracker — words light up as you speak ──
+  (function(){
+    var s=document.querySelector('.sent');if(!s)return;
+    var words=s.textContent.trim().split(/\s+/);
+    s.innerHTML=words.map(function(w){return '<span class="w">'+w+'</span>'}).join(' ');
+    var ws=[].slice.call(s.querySelectorAll('.w')),i=9,sp=document.querySelector('.sprog i');
+    function paint(){
+      ws.forEach(function(w,k){w.classList.toggle('done',k<i);w.classList.toggle('cur',k===i)});
+      if(sp)sp.style.width=Math.round(i/ws.length*100)+'%';
+    }
+    paint();
+    setInterval(function(){i++;if(i>ws.length){i=0;if(sp)sp.style.width='0%'}paint()},430);
+  })();
 </script>
 </body>
 </html>
